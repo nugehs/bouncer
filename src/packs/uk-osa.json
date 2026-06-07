@@ -1,0 +1,99 @@
+{
+  "id": "uk-osa",
+  "title": "UK Online Safety Act 2023",
+  "authority": "Ofcom",
+  "url": "https://www.ofcom.org.uk/online-safety/",
+  "rules": [
+    {
+      "id": "osa.age-assurance-highly-effective",
+      "standard": "Children's safety duties — highly effective age assurance",
+      "severity": "high",
+      "surface": "signup",
+      "intent": "Where a service can be accessed by children and carries content harmful to them, 'highly effective' age assurance is required — self-declaration alone does not meet the bar.",
+      "fix": "Integrate a recognised age-assurance method (age estimation, ID/age verification, or equivalent) on the access path.",
+      "assert": {
+        "find": "age[_-]?(assurance|verification|estimation)|id[_-]?verification|\\bkyc\\b|yoti|onfido|veriff|persona|stripe[_-]?identity",
+        "in": ["signup", "auth", "any"],
+        "expect": "present"
+      }
+    },
+    {
+      "id": "osa.report-mechanism-ugc",
+      "standard": "Illegal content duties — reporting & complaints",
+      "severity": "high",
+      "surface": "ugc",
+      "intent": "Users must be able to easily report illegal content and content harmful to children on user-to-user surfaces (chat, livestream, profiles).",
+      "fix": "Add a report/flag affordance to every user-generated-content surface, wired to a complaints workflow.",
+      "assert": {
+        "find": "(report|flag)[^\\n]{0,25}(content|message|user|post|abuse|stream|comment)|reportContent|onReport|report[_-]?reason|flagContent",
+        "in": ["ugc"],
+        "expect": "present"
+      }
+    },
+    {
+      "id": "osa.block-mechanism-ugc",
+      "standard": "Children's safety duties — user controls",
+      "severity": "high",
+      "surface": "ugc",
+      "intent": "Users (especially children) must be able to block and mute other users on interactive surfaces.",
+      "fix": "Provide block/mute controls on chat, livestream, and profile surfaces.",
+      "assert": {
+        "find": "(block|mute)[^\\n]{0,15}(user|member|participant|sender)|blockUser|onBlock|muteUser|toggleBlock",
+        "in": ["ugc"],
+        "expect": "present"
+      }
+    },
+    {
+      "id": "osa.content-moderation-present",
+      "standard": "Illegal content duties — proactive measures",
+      "severity": "medium",
+      "surface": "ugc",
+      "intent": "Proportionate content-moderation measures should be applied to user-generated content (filtering, profanity/abuse detection, or moderation hooks).",
+      "fix": "Add moderation hooks (profanity/abuse filtering, content classification, or a moderation queue) to UGC surfaces.",
+      "assert": {
+        "find": "moderat|profanity|content[_-]?filter|banned[_-]?words|blocklist|toxicity|safetyFilter",
+        "in": ["ugc"],
+        "expect": "present"
+      }
+    },
+    {
+      "id": "osa.illegal-content-risk-assessment",
+      "standard": "Illegal content risk assessment duty",
+      "severity": "high",
+      "surface": "governance",
+      "intent": "Services must carry out and keep up to date an illegal-content risk assessment (and, where in scope, a children's access/risk assessment).",
+      "fix": "Add an illegal-content (and children's) risk assessment artifact to the repo or link it from governance docs.",
+      "assert": {
+        "find": "illegal[_-]?content[_-]?risk|risk assessment|children'?s? (access|risk) assessment",
+        "in": ["governance", "any"],
+        "expect": "present"
+      }
+    },
+    {
+      "id": "osa.csam-reporting-route",
+      "standard": "Illegal content — CSEA priority offences",
+      "severity": "high",
+      "surface": "governance",
+      "intent": "There must be a route to detect, remove, and report child sexual abuse material (CSEA), e.g. referral to NCMEC/IWF.",
+      "fix": "Document and implement a CSAM detection/escalation route (NCMEC/IWF referral or equivalent) for UGC.",
+      "assert": {
+        "find": "\\bcsam\\b|\\bcsea\\b|child sexual|\\bncmec\\b|\\biwf\\b",
+        "in": ["governance", "ugc", "any"],
+        "expect": "present"
+      }
+    },
+    {
+      "id": "osa.terms-prohibit-illegal-content",
+      "standard": "Terms of service — clarity duty",
+      "severity": "low",
+      "surface": "governance",
+      "intent": "Terms of service / community guidelines must clearly prohibit illegal content and set out enforcement.",
+      "fix": "Add community guidelines / acceptable-use terms that prohibit illegal content and describe enforcement.",
+      "assert": {
+        "find": "prohibited content|illegal content|community guidelines|acceptable use|content policy",
+        "in": ["governance", "any"],
+        "expect": "present"
+      }
+    }
+  ]
+}

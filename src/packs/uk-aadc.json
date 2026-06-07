@@ -1,0 +1,109 @@
+{
+  "id": "uk-aadc",
+  "title": "UK Age Appropriate Design Code (ICO Children's Code)",
+  "authority": "ICO — UK GDPR / Data Protection Act 2018",
+  "url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/childrens-information/childrens-code-guidance-and-resources/age-appropriate-design-a-code-of-practice-for-online-services/",
+  "rules": [
+    {
+      "id": "aadc.age-assurance-present",
+      "standard": "Standard 3 — Age-appropriate application",
+      "severity": "high",
+      "surface": "signup",
+      "intent": "The service must establish age with a level of certainty appropriate to the risks — a real age-assurance step at sign-up, not nothing.",
+      "fix": "Capture date of birth or run age assurance at registration so age-appropriate treatment can be applied.",
+      "assert": {
+        "find": "date[_-]?of[_-]?birth|dateOfBirth|\\bdob\\b|birth[_-]?date|age[_-]?(gate|check|verif|assur|estimat)",
+        "in": ["signup", "auth"],
+        "expect": "present"
+      }
+    },
+    {
+      "id": "aadc.self-declared-age-insufficient",
+      "standard": "Standard 3 — Age-appropriate application",
+      "severity": "medium",
+      "surface": "signup",
+      "intent": "A bare self-declaration checkbox ('I am over 18') is not sufficient age assurance under current ICO/Ofcom expectations.",
+      "fix": "Replace or back the self-declared age checkbox with real age assurance (DOB + verification, estimation, or ID).",
+      "assert": {
+        "find": "type=[\"']checkbox[\"'][^>]*(age|over\\s*18|18\\s*\\+)|(over\\s*18|18\\s*\\+|i am over)[^<]{0,40}checkbox",
+        "in": ["signup", "auth"],
+        "expect": "absent"
+      }
+    },
+    {
+      "id": "aadc.high-privacy-default",
+      "standard": "Standard 7 — Default settings",
+      "severity": "high",
+      "surface": "profile",
+      "intent": "Settings must be 'high privacy' by default for children — profiles private unless the child changes it.",
+      "fix": "Default profile visibility to private/followers-only for accounts that may belong to a child.",
+      "assert": {
+        "allInFile": [
+          "visibility|profileVisibility|isPrivate|accountPrivacy",
+          "default|initial|defaultValue|initialState",
+          "private|PRIVATE|followers|true"
+        ],
+        "within": 4,
+        "in": ["profile"],
+        "expect": "present"
+      }
+    },
+    {
+      "id": "aadc.geolocation-default-off",
+      "standard": "Standard 10 — Geolocation",
+      "severity": "high",
+      "surface": "profile",
+      "intent": "Geolocation must default to off for children, and any setting that makes a child's location visible to others must default off.",
+      "fix": "Default any location-sharing / geolocation setting to off; switch it back off at the end of each session.",
+      "assert": {
+        "allInFile": [
+          "geo|location|geolocation|shareLocation|locationSharing",
+          "default|initial|defaultValue|initialState",
+          "false|off|disabled|private"
+        ],
+        "within": 4,
+        "in": ["profile", "any"],
+        "expect": "present"
+      }
+    },
+    {
+      "id": "aadc.no-nudge-techniques",
+      "standard": "Standard 13 — Nudge techniques",
+      "severity": "medium",
+      "surface": "any",
+      "intent": "Do not use nudge techniques to lead or encourage children to provide unnecessary personal data or weaken their privacy.",
+      "fix": "Remove copy/flows that push users to make profiles public, share location, or disable privacy to unlock features.",
+      "assert": {
+        "find": "make[^\\n<]{0,20}(profile|account)[^\\n<]{0,20}public|share[^\\n<]{0,20}location[^\\n<]{0,20}(unlock|get|earn)|turn off[^\\n<]{0,20}privacy",
+        "in": ["any"],
+        "expect": "absent"
+      }
+    },
+    {
+      "id": "aadc.parental-consent-under13",
+      "standard": "Standard 9 — Data minimisation / lawful basis (under 13)",
+      "severity": "high",
+      "surface": "signup",
+      "intent": "Where the service relies on consent for a child under 13, parental/guardian consent must be obtained.",
+      "fix": "Add a parental/guardian consent flow for under-13 sign-ups before processing their data.",
+      "assert": {
+        "find": "parental[_-]?consent|guardian[_-]?consent|parentEmail|guardianEmail|under[_-]?13",
+        "in": ["signup", "auth"],
+        "expect": "present"
+      }
+    },
+    {
+      "id": "aadc.dpia-exists",
+      "standard": "Standard 2 — Data Protection Impact Assessments",
+      "severity": "high",
+      "surface": "governance",
+      "intent": "A DPIA must be completed and maintained for services likely to be accessed by children.",
+      "fix": "Add and keep current a Data Protection Impact Assessment (DPIA) artifact in the repo or linked from it.",
+      "assert": {
+        "find": "data protection impact assessment|\\bDPIA\\b",
+        "in": ["governance", "any"],
+        "expect": "present"
+      }
+    }
+  ]
+}

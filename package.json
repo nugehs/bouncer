@@ -1,0 +1,52 @@
+{
+  "name": "@nugehs/bouncer",
+  "version": "0.1.0",
+  "mcpName": "io.github.nugehs/bouncer",
+  "description": "bouncer — static compliance-controls checker. Verifies the controls a regulation requires actually exist in your code (UK Online Safety Act, ICO Children's Code), as deterministic rule packs. No LLM required.",
+  "type": "module",
+  "bin": {
+    "bouncer": "src/cli.js"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "start": "node src/cli.js",
+    "check": "node src/cli.js check",
+    "mcp": "node src/cli.js mcp",
+    "doctor": "node src/cli.js doctor",
+    "test": "node --test tests/*.test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nugehs/bouncer.git"
+  },
+  "homepage": "https://github.com/nugehs/bouncer#readme",
+  "bugs": {
+    "url": "https://github.com/nugehs/bouncer/issues"
+  },
+  "keywords": [
+    "cli",
+    "mcp",
+    "mcp-server",
+    "compliance",
+    "online-safety-act",
+    "age-appropriate-design-code",
+    "childrens-code",
+    "aadc",
+    "age-assurance",
+    "static-analysis",
+    "policy-as-code",
+    "ci",
+    "developer-tools"
+  ],
+  "license": "MIT"
+}

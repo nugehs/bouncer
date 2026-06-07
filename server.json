@@ -1,0 +1,28 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.nugehs/bouncer",
+  "title": "bouncer",
+  "description": "Static compliance-controls checker — verifies the controls a regulation requires exist in code (UK Online Safety Act, ICO Children's Code) as deterministic rule packs.",
+  "websiteUrl": "https://github.com/nugehs/bouncer#readme",
+  "repository": {
+    "url": "https://github.com/nugehs/bouncer",
+    "source": "github"
+  },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@nugehs/bouncer",
+      "version": "0.1.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "packageArguments": [
+        {
+          "type": "positional",
+          "value": "mcp"
+        }
+      ]
+    }
+  ]
+}
