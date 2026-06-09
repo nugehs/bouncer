@@ -1,8 +1,8 @@
 {
   "name": "@nugehs/bouncer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "mcpName": "io.github.nugehs/bouncer",
-  "description": "bouncer — static compliance-controls checker. Verifies the controls a regulation requires actually exist in your code (UK Online Safety Act, ICO Children's Code), as deterministic rule packs. No LLM required.",
+  "description": "bouncer \u2014 static compliance-controls checker. Verifies the controls a regulation requires actually exist in your code (UK Online Safety Act, ICO Children's Code), as deterministic rule packs. No LLM required.",
   "type": "module",
   "bin": {
     "bouncer": "src/cli.js"
