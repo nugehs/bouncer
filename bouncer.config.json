@@ -1,11 +1,20 @@
 {
   "target": {
     "adapter": "next",
-    "repo": "../bashbop-event-web",
-    "roots": ["app", "src", "components", "redux"]
+    "repo": "./my-app",
+    "roots": [
+      "app",
+      "src",
+      "components"
+    ]
   },
-  "packs": ["uk-osa", "uk-aadc"],
+  "packs": [
+    "uk-osa",
+    "uk-aadc"
+  ],
   "packDirs": [],
   "ignore": [],
-  "failOn": ["fail"]
+  "failOn": [
+    "fail"
+  ]
 }

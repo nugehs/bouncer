@@ -5,6 +5,27 @@ All notable changes to `@nugehs/bouncer` are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Brand alignment: toolchain footer/badges.
+- README: badge row (npm version, CI, license, node, zero dependencies).
+- README: "bouncer vs semgrep / policy-as-code" positioning section.
+- README: prominent note that the shipped adapters today are `next` and
+  `react-native`, with an invitation for adapter PRs (nuxt, sveltekit, remix,
+  flutter, django).
+- README: Tests section documenting the Node built-in test suite and CI matrix.
+- Tag-triggered release workflow (`.github/workflows/release.yml`): runs tests,
+  creates a GitHub Release with notes extracted from this changelog, publishes
+  to npm.
+
+### Changed
+
+- Replaced a personal example target path with a generic `./my-app` in the
+  README and the repo-root `bouncer.config.json`.
+- README link to tieline now points at its npm package page.
+
 ## [0.1.0] - 2026-06-07
 
 Initial release.

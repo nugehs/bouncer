@@ -6,3 +6,6 @@ dist/
 # Generated reports
 bouncer-report.html
 bouncer-report.json
+
+# repoctx generated context (contains machine-local absolute paths)
+.dev-context/
