@@ -2,7 +2,7 @@
 
 **Static compliance-controls checker — the controls a regulation requires, verified in your code.**
 
-[![npm](https://img.shields.io/npm/v/@nugehs/bouncer?style=flat-square&color=dc0000)](https://www.npmjs.com/package/@nugehs/bouncer) [![CI](https://img.shields.io/github/actions/workflow/status/nugehs/bouncer/ci.yml?style=flat-square&label=CI)](https://github.com/nugehs/bouncer/actions/workflows/ci.yml) [![license: MIT](https://img.shields.io/badge/license-MIT-dc0000?style=flat-square)](LICENSE) [![node](https://img.shields.io/badge/node-%3E%3D18-dc0000?style=flat-square)](#) [![dependencies](https://img.shields.io/badge/dependencies-0-dc0000?style=flat-square)](#)
+[![npm](https://img.shields.io/npm/v/@nugehs/bouncer?style=flat-square)](https://www.npmjs.com/package/@nugehs/bouncer) [![CI](https://img.shields.io/github/actions/workflow/status/nugehs/bouncer/ci.yml?style=flat-square&label=CI)](https://github.com/nugehs/bouncer/actions/workflows/ci.yml) [![license: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE) [![node](https://img.shields.io/badge/node-%3E%3D18-blue?style=flat-square)](#) [![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen?style=flat-square)](#)
 
 **[nugehs.github.io/bouncer-web](https://nugehs.github.io/bouncer-web/)** (site)
 
