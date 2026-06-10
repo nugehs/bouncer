@@ -6,6 +6,8 @@
 
 **[nugehs.github.io/bouncer-web](https://nugehs.github.io/bouncer-web/)** (site)
 
+![bouncer demo](bouncer-demo.gif)
+
 bouncer verifies that the controls a
 regulation *requires* actually exist in your code — UK Online Safety Act, ICO
 Children's Code (AADC) — expressed as deterministic **rule packs**. It runs in CI,
