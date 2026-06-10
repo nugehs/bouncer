@@ -19,6 +19,7 @@
     "mcp": "node src/cli.js mcp",
     "doctor": "node src/cli.js doctor",
     "test": "node --test tests/*.test.js",
+    "version": "node scripts/sync-server-version.mjs && git add server.json",
     "prepublishOnly": "npm test"
   },
   "engines": {

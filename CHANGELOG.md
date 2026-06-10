@@ -5,6 +5,19 @@ All notable changes to `@nugehs/bouncer` are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.3] - 2026-06-10
+
+### Added
+
+- README: demo GIF showing `bouncer check` against a demo Next.js app.
+- Release workflow now publishes `server.json` to the MCP Registry (GitHub OIDC),
+  which 0.1.x releases were silently skipping.
+- `version` lifecycle hook keeps `server.json` in sync with `package.json`.
+
+### Changed
+
+- README badges use semantic colors instead of brand red.
+
 ## [0.1.1] - 2026-06-09
 ### Added
 
