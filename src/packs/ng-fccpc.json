@@ -1,0 +1,97 @@
+{
+  "id": "ng-fccpc",
+  "title": "Nigeria Consumer Protection (FCCPC)",
+  "authority": "Federal Competition & Consumer Protection Commission",
+  "url": "https://fccpc.gov.ng/",
+  "rules": [
+    {
+      "id": "fccpc.no-final-sale-clause",
+      "standard": "Void terms — blanket 'no refund / all sales final' clauses (FCCPA s.130)",
+      "severity": "high",
+      "surface": "any",
+      "intent": "A blanket 'no refund / all sales final / non-refundable' clause that excludes a consumer's statutory rights is void and unenforceable — it must not appear in your terms.",
+      "fix": "Remove blanket no-refund language; state refund eligibility (event cancellation, faulty service, statutory rights) instead.",
+      "assert": {
+        "find": "all sales (are )?final|no refunds?,?\\s+(whatsoever|under any circumstances?|no exceptions|ever\\b)|no refunds? (will be|are) (made|given|issued|provided|offered|accepted)|strictly non[-_ ]?refundable|all (tickets|sales|purchases|fees|payments) are non[-_ ]?refundable|non[-_ ]?refundable and non[-_ ]?(transferable|exchangeable)|no returns,? no refunds",
+        "in": [
+          "**/terms/**/*.{ts,tsx,md,mdx}",
+          "**/*{Terms,Refund,Policy,Disclaimer}*.{ts,tsx}",
+          "lib/compliance/**/*.{ts,tsx}",
+          "legal/**/*.{md,mdx}"
+        ],
+        "expect": "absent"
+      }
+    },
+    {
+      "id": "fccpc.refund-policy-present",
+      "standard": "Right to refund / redress must be disclosed (FCCPA s.120-122)",
+      "severity": "high",
+      "surface": "any",
+      "intent": "A clear refund / cancellation policy must be available to the consumer (e.g. when an event is cancelled or rescheduled).",
+      "fix": "Publish a refund/cancellation policy covering cancellations, reschedules, and faulty-service refunds.",
+      "assert": {
+        "find": "refund[-_ ]?(policy|eligib|process|request)|cancellation policy|refundPolicy|right to (cancel|a refund)|cancel.*refund",
+        "in": [
+          "**/terms/**/*.{ts,tsx,md,mdx}",
+          "**/*{Refund,Cancel,Terms}*.{ts,tsx}",
+          "lib/compliance/**/*.{ts,tsx}",
+          "src/**/*refund*.ts",
+          "{docs,legal}/**/*.{md,mdx}"
+        ],
+        "expect": "present"
+      }
+    },
+    {
+      "id": "fccpc.no-drip-pricing",
+      "standard": "No drip pricing — total price incl. fees shown before payment (FCCPA s.114-115)",
+      "severity": "high",
+      "surface": "any",
+      "intent": "The total price including service/booking fees must be disclosed before the consumer commits — fees revealed only at the final step (drip pricing) is a misleading practice.",
+      "fix": "Compute and display the all-in total (ticket + service/booking fee) on the pricing/checkout surface before payment.",
+      "assert": {
+        "allInFile": ["(service|booking|platform|processing)[_-]?fee", "total"],
+        "in": [
+          "**/*{fee,Fee,checkout,Checkout,pricing,Pricing}*.{ts,tsx}",
+          "**/{checkout,booking,ticket-purchase}/**/*.{ts,tsx}",
+          "lib/*fee*.{ts,tsx}"
+        ],
+        "within": 60,
+        "expect": "present"
+      }
+    },
+    {
+      "id": "fccpc.explicit-terms-acceptance",
+      "standard": "Informed consent to terms — no pre-ticked acceptance (FCCPA s.114)",
+      "severity": "medium",
+      "surface": "any",
+      "intent": "The consumer must actively accept the terms at sign-up/checkout; acceptance must not be pre-ticked or buried.",
+      "fix": "Require an explicit, un-pre-ticked 'I accept the Terms' action at sign-up/checkout.",
+      "assert": {
+        "find": "(accept|agree)[^\\n]{0,30}(terms|conditions)|InlineTermsAcceptance|terms[_-]?accepted|acceptTerms|agreeToTerms",
+        "in": [
+          "**/{signup,sign-up,register,checkout,booking}/**/*.{ts,tsx}",
+          "**/*{Terms,Signup,Register,Checkout,Booking}*.{ts,tsx}",
+          "lib/compliance/**/*.{ts,tsx}"
+        ],
+        "expect": "present"
+      }
+    },
+    {
+      "id": "fccpc.terms-of-service-present",
+      "standard": "Plain, accessible terms of service (FCCPA s.114)",
+      "severity": "low",
+      "surface": "any",
+      "intent": "Clear terms of service / use must be published and accessible to the consumer.",
+      "fix": "Publish a terms-of-service page and link it from the footer and checkout.",
+      "assert": {
+        "find": "terms of (use|service)|TermsOfUse|terms[_-]?(and|&)[_-]?conditions|terms[_-]?of[_-]?use",
+        "in": [
+          "**/terms/**/*.{ts,tsx,md,mdx}",
+          "**/*{Terms}*.{ts,tsx}",
+          "{docs,legal}/**/*.{md,mdx}"
+        ],
+        "expect": "present"
+      }
+    }
+  ]
+}

@@ -1,0 +1,189 @@
+{
+  "id": "ng-ndpc",
+  "title": "Nigeria Data Protection Act 2023 (NDPC)",
+  "authority": "Nigeria Data Protection Commission",
+  "url": "https://ndpc.gov.ng/",
+  "rules": [
+    {
+      "id": "ndpc.privacy-notice-present",
+      "standard": "Lawful processing — transparency / privacy notice (NDPA s.27)",
+      "severity": "high",
+      "surface": "privacy",
+      "intent": "A data subject must be given a privacy notice describing what personal data is collected, the legal basis, and their rights.",
+      "fix": "Publish a privacy notice/policy page and link it from sign-up, checkout, and the footer.",
+      "assert": {
+        "find": "privacy[_-]?(policy|notice)|PrivacyPolicy|data[_-]?protection[_-]?(policy|notice)",
+        "in": [
+          "**/privacy/**/*.{ts,tsx,md,mdx}",
+          "**/*{Privacy,privacy}*.{ts,tsx}",
+          "lib/compliance/**/*.{ts,tsx}",
+          "src/gdpr/**/*.ts",
+          "{docs,legal,compliance}/**/*.{md,mdx}"
+        ],
+        "expect": "present"
+      }
+    },
+    {
+      "id": "ndpc.consent-mechanism-optin",
+      "standard": "Consent must be freely given, specific and opt-in (NDPA s.26)",
+      "severity": "high",
+      "surface": "consent",
+      "intent": "Non-essential cookies/trackers and secondary processing need explicit opt-in consent — pre-ticked or implied consent does not meet the bar.",
+      "fix": "Add a consent banner/manager whose non-essential categories default to OFF until the user opts in.",
+      "assert": {
+        "find": "CookieBanner|CMP_STORAGE_KEY|useConsentSettings|consent[_-]?(banner|manager|settings|preferences)|ConsentSettings|update-consent",
+        "in": [
+          "**/{cmp,cookie,cookies,consent}/**/*.{ts,tsx}",
+          "**/*{Cookie,Consent}*.{ts,tsx}",
+          "**/useConsent*.{ts,tsx}",
+          "src/**/*{consent,Consent}*.ts"
+        ],
+        "expect": "present"
+      }
+    },
+    {
+      "id": "ndpc.consent-granular-purposes",
+      "standard": "Specific consent per purpose (NDPA s.26(2))",
+      "severity": "medium",
+      "surface": "consent",
+      "intent": "Consent must be collected per processing purpose (e.g. analytics, marketing) rather than as one blanket toggle.",
+      "fix": "Split consent into granular categories (analytics, marketing/advertising, functional) the user can accept or reject independently.",
+      "assert": {
+        "allInFile": ["consent|cookie", "analytic|marketing|advertis|functional|necessary"],
+        "in": [
+          "**/{cmp,cookie,cookies,consent}/**/*.{ts,tsx}",
+          "**/*{Cookie,Consent}*.{ts,tsx}",
+          "src/**/*{consent,Consent}*.ts"
+        ],
+        "within": 40,
+        "expect": "present"
+      }
+    },
+    {
+      "id": "ndpc.data-subject-rights",
+      "standard": "Data subject rights — access, portability, erasure (NDPA s.34-37)",
+      "severity": "high",
+      "surface": "any",
+      "intent": "Data subjects must be able to access/export their data and request deletion (right to erasure).",
+      "fix": "Expose export-data, data-access-request, and delete-account flows wired to a fulfilment workflow.",
+      "assert": {
+        "find": "export[_-]?(user[_-]?)?data|delete[_-]?account|data[_-]?access[_-]?request|right[_-]?to[_-]?(erasure|access|portability)|DataAccessRequest|GDPRDataManagement",
+        "in": [
+          "src/gdpr/**/*.ts",
+          "**/{gdpr,settings}/**/*.{ts,tsx}",
+          "**/*{GDPR,Gdpr,DataAccess,DeleteAccount,ExportData}*.{ts,tsx}",
+          "lib/compliance/**/*.{ts,tsx}"
+        ],
+        "expect": "present"
+      }
+    },
+    {
+      "id": "ndpc.security-encryption",
+      "standard": "Security of processing — appropriate technical measures (NDPA s.39)",
+      "severity": "medium",
+      "surface": "any",
+      "intent": "Personal data must be protected with appropriate technical measures such as encryption of sensitive fields at rest.",
+      "fix": "Encrypt sensitive personal data (PII, contact details) at rest and hash credentials.",
+      "assert": {
+        "find": "createCipheriv|DataEncryption|encrypt(ion)?[_-]?(service|key|at[_-]?rest)|RecipientPrivacy|bcrypt",
+        "in": [
+          "src/security/**/*.ts",
+          "src/**/*{encryption,Encryption,privacy}*.ts",
+          "**/*{Encryption,DataEncryption}*"
+        ],
+        "expect": "present"
+      }
+    },
+    {
+      "id": "ndpc.retention-and-erasure-lifecycle",
+      "standard": "Storage limitation — retention & deletion (NDPA s.24(1)(e))",
+      "severity": "medium",
+      "surface": "any",
+      "intent": "Personal data must not be kept longer than necessary — a retention/soft-delete + scheduled purge lifecycle should exist.",
+      "fix": "Implement soft-delete with a scheduled hard-purge after the retention window, and document the retention period.",
+      "assert": {
+        "find": "soft[_-]?delete|data[_-]?retention|retention[_-]?(period|policy|window)|purge|scheduled.*(delete|purge)|deleteAfter",
+        "in": [
+          "src/soft-delete/**/*.ts",
+          "src/common/*soft-delete*.ts",
+          "src/scheduled-tasks/**/*.ts",
+          "**/*{soft-delete,softDelete,retention,Retention}*"
+        ],
+        "expect": "present"
+      }
+    },
+    {
+      "id": "ndpc.ndpa-localized",
+      "standard": "Applicable law — Nigeria Data Protection Act 2023, not only foreign regimes",
+      "severity": "high",
+      "surface": "governance",
+      "intent": "A platform processing Nigerian data subjects must apply the NDPA 2023 / NDPC framework — a GDPR-only privacy posture is not sufficient.",
+      "fix": "Reference the NDPA 2023 / NDPC explicitly in the privacy notice and compliance docs, alongside any GDPR text.",
+      "assert": {
+        "find": "\\bNDPA\\b|\\bNDPC\\b|Nigeria[n]? Data Protection|Data Protection Act,?\\s*2023|nigeria[_-]?data[_-]?protection",
+        "in": [
+          "lib/compliance/**/*.{ts,tsx}",
+          "**/privacy/**/*.{ts,tsx,md,mdx}",
+          "**/*{Privacy,privacy}*.{ts,tsx}",
+          "src/gdpr/**/*.ts",
+          "{docs,legal,compliance}/**/*.{md,mdx}"
+        ],
+        "expect": "present"
+      }
+    },
+    {
+      "id": "ndpc.dpo-designated",
+      "standard": "Data Protection Officer — required for a Data Controller of Major Importance (NDPA s.32)",
+      "severity": "high",
+      "surface": "governance",
+      "intent": "A Data Controller of Major Importance must designate a Data Protection Officer and publish a contact route for data-protection queries.",
+      "fix": "Designate a DPO and publish a data-protection contact (e.g. privacy@/dpo@) in the privacy notice.",
+      "assert": {
+        "find": "data[_-]?protection[_-]?officer|\\bDPO\\b|dpo@|privacy@|protection[_-]?officer",
+        "in": [
+          "**/privacy/**/*.{ts,tsx,md,mdx}",
+          "lib/compliance/**/*.{ts,tsx}",
+          "**/*{Privacy,privacy}*.{ts,tsx}",
+          "src/gdpr/**/*.ts",
+          "{docs,legal,compliance}/**/*.{md,mdx}"
+        ],
+        "expect": "present"
+      }
+    },
+    {
+      "id": "ndpc.breach-notification-plan",
+      "standard": "Personal data breach notification within 72 hours (NDPA s.40)",
+      "severity": "medium",
+      "surface": "governance",
+      "intent": "There must be a documented breach-response plan that notifies the NDPC within 72 hours and affected data subjects without undue delay.",
+      "fix": "Add a breach-response runbook documenting the 72-hour NDPC notification and data-subject notification steps.",
+      "assert": {
+        "find": "breach[_-]?(notification|response|plan|runbook)|data breach|72[-_ ]?hour|incident[_-]?response",
+        "in": [
+          "{docs,legal,compliance,governance,security}/**/*.{md,mdx}",
+          "lib/compliance/**/*.{ts,tsx}",
+          "**/*{breach,Breach,incident,Incident}*"
+        ],
+        "expect": "present"
+      }
+    },
+    {
+      "id": "ndpc.cross-border-safeguards",
+      "standard": "Cross-border transfer safeguards & processor agreements (NDPA s.41-43)",
+      "severity": "medium",
+      "surface": "governance",
+      "intent": "Personal data sent to processors abroad (payments, email, analytics) needs an adequacy basis or contractual safeguards (a DPA per processor).",
+      "fix": "Document cross-border transfer bases and sign a Data Processing Agreement with each sub-processor; list sub-processors in the privacy notice.",
+      "assert": {
+        "find": "cross[_-]?border|international (data )?transfer|data[-_ ]processing[-_ ]agreement|\\bDPA\\b|sub[_-]?processor|standard contractual",
+        "in": [
+          "{docs,legal,compliance}/**/*.{md,mdx}",
+          "lib/compliance/**/*.{ts,tsx}",
+          "**/privacy/**/*.{ts,tsx,md,mdx}",
+          "**/*{processor,Processor,transfer,Transfer}*"
+        ],
+        "expect": "present"
+      }
+    }
+  ]
+}
