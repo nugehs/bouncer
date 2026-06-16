@@ -10,7 +10,8 @@
 
 bouncer verifies that the controls a
 regulation *requires* actually exist in your code — UK Online Safety Act, ICO
-Children's Code (AADC) — expressed as deterministic **rule packs**. It runs in CI,
+Children's Code (AADC), and Nigeria (NDPC, FCCPC, FIRS) — expressed as
+deterministic **rule packs**. It runs in CI,
 exits non-zero when a required control is missing, and needs **no LLM**.
 
 It checks IDs at the door so non-compliant code doesn't get in.
@@ -106,7 +107,7 @@ not find. Missing surface → honest "can't determine".
 > aliases to file globs (see `src/lib/adapters/next.js`). **Adapter PRs are very
 > welcome** — `nuxt`, `sveltekit`, `remix`, `flutter`, `django` are all natural
 > candidates.
-- `packs` — which rule packs to run. Built-ins: `uk-osa`, `uk-aadc`.
+- `packs` — which rule packs to run. Built-ins: `uk-osa`, `uk-aadc`, `ng-ndpc`, `ng-fccpc`, `ng-firs`.
 - `packDirs` — extra directories of your own `*.json` packs.
 - `ignore` — rule ids to skip.
 - `failOn` — which buckets make `check` exit non-zero (default `["fail"]`).
@@ -144,6 +145,24 @@ or a raw glob. `expect: "absent"` flips the meaning — a match is a *violation*
 ### Surfaces (next adapter)
 
 `any`, `signup`, `auth`, `profile`, `chat`, `livestream`, `ugc`, `governance`.
+
+### Nigeria packs
+
+For a platform operating in Nigeria, three packs ship built-in:
+
+- **`ng-ndpc`** — Nigeria Data Protection Act 2023 (NDPC): privacy notice, opt-in
+  & granular consent, data-subject rights, encryption, retention/erasure, NDPA
+  localization, DPO designation, 72-hour breach plan, cross-border safeguards.
+- **`ng-fccpc`** — consumer protection (FCCPC): blanket "no refund / all sales
+  final" clauses flagged as **void** — and high-precision, so a *tiered* or
+  conditional refund policy doesn't trip it — plus refund-policy present, no drip
+  pricing, explicit terms acceptance, terms of service present.
+- **`ng-firs`** — tax (FIRS): 7.5% VAT rate, VAT on commission, WHT on payouts,
+  VAT tax invoice.
+
+Some obligations are process, not code — NDPC registration, signed cross-border
+DPAs, the WHT remittance itself. Those rules surface as **gaps to track** (add
+them to `ignore` with a note), not things a static scan can prove.
 
 ## MCP
 

@@ -5,6 +5,23 @@ All notable changes to `@nugehs/bouncer` are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-06-16
+
+### Added
+
+- **Nigeria rule packs** — three deterministic packs for a platform operating in
+  Nigeria, validated against a real Next.js front end and a NestJS API:
+  - `ng-ndpc` (10 rules) — Nigeria Data Protection Act 2023 / NDPC: privacy
+    notice, opt-in & granular consent, data-subject rights (access/erasure),
+    encryption at rest, retention/erasure lifecycle, NDPA localization, DPO
+    designation, 72-hour breach plan, and cross-border transfer safeguards.
+  - `ng-fccpc` (5 rules) — consumer protection (FCCPC): blanket "no refund / all
+    sales final" clauses flagged as void (high-precision — a tiered/conditional
+    refund policy does not trip it), refund policy present, no drip pricing,
+    explicit terms acceptance, and terms of service present.
+  - `ng-firs` (4 rules) — tax (FIRS): 7.5% VAT rate, VAT on the platform
+    commission, WHT on organiser payouts, and VAT tax invoices.
+
 ## [0.1.3] - 2026-06-10
 
 ### Added

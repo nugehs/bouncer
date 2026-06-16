@@ -1,0 +1,77 @@
+{
+  "id": "ng-firs",
+  "title": "Nigeria Tax — VAT & WHT (FIRS / NRS)",
+  "authority": "Federal Inland Revenue Service",
+  "url": "https://firs.gov.ng/",
+  "rules": [
+    {
+      "id": "firs.vat-rate-7-5",
+      "standard": "VAT charged at the statutory 7.5% (VAT Act as amended)",
+      "severity": "medium",
+      "surface": "any",
+      "intent": "Where the platform charges VAT, it must use the statutory 7.5% rate, expressed as a single source-of-truth constant rather than a magic number.",
+      "fix": "Define a VAT_RATE = 0.075 constant and apply it consistently; do not hard-code other rates.",
+      "assert": {
+        "find": "VAT_RATE|vat[_-]?rate|0\\.075\\b|7\\.5\\s*%",
+        "in": [
+          "src/**/*{tax,Tax,vat,Vat,fee,Fee,payment,Payment,pricing}*.ts",
+          "**/*{fee,Fee,tax,Tax,vat,Vat,pricing,Pricing}*.{ts,tsx}",
+          "lib/*fee*.{ts,tsx}"
+        ],
+        "expect": "present"
+      }
+    },
+    {
+      "id": "firs.vat-on-commission",
+      "standard": "VAT applied to the platform commission / service fee",
+      "severity": "medium",
+      "surface": "any",
+      "intent": "VAT is due on the platform's commission/service fee — the fee computation should apply VAT to the commission line.",
+      "fix": "Apply VAT to the commission/service-fee line in the fee calculation and surface it on the invoice.",
+      "assert": {
+        "allInFile": ["commission|service[_-]?fee|platform[_-]?fee", "\\bvat\\b|\\btax\\b"],
+        "in": [
+          "src/**/*{fee,Fee,tax,Tax,commission,payment,seller}*.ts",
+          "**/*{fee,Fee,pricing,Pricing,commission}*.{ts,tsx}",
+          "lib/*fee*.{ts,tsx}"
+        ],
+        "within": 40,
+        "expect": "present"
+      }
+    },
+    {
+      "id": "firs.wht-on-payouts",
+      "standard": "Withholding tax handled on organiser payouts",
+      "severity": "medium",
+      "surface": "any",
+      "intent": "Where WHT applies to payouts to organisers/vendors, the payout pipeline should account for and record the withheld amount.",
+      "fix": "Add WHT handling to the payout calculation (compute, withhold, and record the WHT line per payout).",
+      "assert": {
+        "find": "withholding|\\bWHT\\b|wht[_-]?(tax|rate|amount)|tax[_-]?withheld",
+        "in": [
+          "src/{seller,paystack,payment,payment-history}/**/*.ts",
+          "src/**/*{payout,Payout,withholding}*.ts",
+          "**/*{payout,Payout,withholding,WHT}*.{ts,tsx}"
+        ],
+        "expect": "present"
+      }
+    },
+    {
+      "id": "firs.vat-invoice-issued",
+      "standard": "Tax invoice / VAT receipt issued to the buyer",
+      "severity": "low",
+      "surface": "any",
+      "intent": "A compliant tax invoice / VAT receipt should be issued for ticket purchases, showing the VAT charged.",
+      "fix": "Include the VAT line on generated receipts/invoices (PDF or email) and label it as a tax invoice.",
+      "assert": {
+        "find": "tax[_-]?invoice|vat[_-]?invoice|vat[_-]?receipt|invoice[^\\n]{0,30}(vat|tax)|receipt[^\\n]{0,30}vat",
+        "in": [
+          "src/pdf/**/*.ts",
+          "src/**/*{invoice,Invoice,receipt,Receipt,ticket-generator}*.ts",
+          "**/*{Invoice,Receipt}*.{ts,tsx}"
+        ],
+        "expect": "present"
+      }
+    }
+  ]
+}
