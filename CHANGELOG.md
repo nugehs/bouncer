@@ -5,7 +5,7 @@ All notable changes to `@nugehs/bouncer` are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.3.0] - 2026-10-13
 
 ### Added
 - **Language-agnostic scanning.** New default adapter `auto` scans TS/JS, Go, Java, Kotlin, Scala, C#, C/C++, Rust, Swift, Dart, PHP, Python, Ruby, Elixir, SQL and templates, plus docs/data. `next`/`react-native` remain as aliases (TS/JS only). Optional `target.languages`.
