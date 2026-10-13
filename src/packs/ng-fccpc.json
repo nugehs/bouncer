@@ -14,7 +14,7 @@
       "assert": {
         "find": "all sales (are )?final|no refunds?,?\\s+(whatsoever|under any circumstances?|no exceptions|ever\\b)|no refunds? (will be|are) (made|given|issued|provided|offered|accepted)|strictly non[-_ ]?refundable|all (tickets|sales|purchases|fees|payments) are non[-_ ]?refundable|non[-_ ]?refundable and non[-_ ]?(transferable|exchangeable)|no returns,? no refunds",
         "in": [
-          "legal"
+          "terms"
         ],
         "expect": "absent"
       }
