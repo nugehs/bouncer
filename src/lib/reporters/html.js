@@ -1,3 +1,6 @@
+import { reasonText } from "../verdicts.js";
+import { groupByPack, packTotals } from "./human.js";
+
 // Self-contained HTML compliance report (inline CSS + a little vanilla JS, no deps).
 // Modelled on tieline's report: a health ring, summary cards, and per-pack control
 // tables with each rule's verdict, the legal standard, and file-level evidence.
@@ -15,13 +18,13 @@ const locCell = (file, line) =>
 export function reportHtml(result, meta = {}) {
   const { findings = [], totals = {}, score = 100, meta: rmeta = {} } = result;
 
-  const byPack = new Map();
-  for (const f of findings) {
-    if (!byPack.has(f.packId)) byPack.set(f.packId, []);
-    byPack.get(f.packId).push(f);
-  }
-
+  const byPack = groupByPack(findings);
   const packSections = [...byPack.values()].map((rows) => packTable(rows)).join("\n");
+  const summaryRows = [...byPack.values()]
+    .map((rows) => packTotals(rows))
+    .map((t) => `<tr><td>${esc(t.pack)}</td><td>${t.pass}</td><td>${t.fail}</td><td>${t.unknown}</td><td>${esc(t.score)}</td></tr>`)
+    .join("");
+  const summary = `<section class="panel"><h2>Summary by pack</h2><table class="grid"><thead><tr><th>Pack</th><th>Pass</th><th>Fail</th><th>Unknown</th><th>Score</th></tr></thead><tbody>${summaryRows}</tbody></table></section>`;
 
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -51,6 +54,7 @@ export function reportHtml(result, meta = {}) {
 
   <p class="disclaimer">bouncer checks that the controls a regulation requires are present in code. It is an engineering aid, <strong>not legal advice</strong> and not a substitute for a compliance/DPO review.</p>
 
+  ${summary}
   ${packSections}
 </main>
 
@@ -78,7 +82,7 @@ function packTable(rows) {
         f.status === "fail"
           ? `<div class="sub">${esc(f.intent || "")}</div><div class="fix">Fix: ${esc(f.fix || "")}</div>`
           : f.status === "unknown"
-            ? `<div class="sub dim">surface not found in this repo — can't determine</div>`
+            ? `<div class="sub dim">${esc(reasonText(f.reason))}</div>`
             : "";
       return `<tr data-status="${f.status}" data-text="${esc(f.ruleId + " " + (f.standard || ""))}">
         <td class="verdict"><span class="pill ${f.status}">${esc(f.status)}</span></td>

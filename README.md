@@ -88,13 +88,14 @@ not find. Missing surface → honest "can't determine".
 ```json
 {
   "target": {
-    "adapter": "next",
+    "adapter": "auto",
     "repo": "./my-app",
-    "roots": ["app", "src", "components"]
+    "roots": ["."]
   },
   "packs": ["uk-osa", "uk-aadc"],
   "packDirs": [],
   "ignore": [],
+  "exclude": [],
   "failOn": ["fail"]
 }
 ```
@@ -102,11 +103,13 @@ not find. Missing surface → honest "can't determine".
 - `adapter` — how regulation *surfaces* (sign-up, profile, chat, livestream…) map
   onto files for your stack.
 
-> **Adapters shipped today: `next` (App Router) and `react-native`.** That's it —
-> if your stack isn't covered, an adapter is a single small file mapping surface
-> aliases to file globs (see `src/lib/adapters/next.js`). **Adapter PRs are very
-> welcome** — `nuxt`, `sveltekit`, `remix`, `flutter`, `django` are all natural
-> candidates.
+> **bouncer is language-agnostic.** The default `auto` adapter scans TS/JS, Go,
+> Java, Kotlin, Scala, C#, C/C++, Rust, Swift, Dart, PHP, Python, Ruby, Elixir,
+> SQL and HTML templates. Surfaces are found by directory/file *names* in any
+> naming convention (`signup/`, `sign_up.py`, `SignUpController.java`).
+> Comments and test/fixture files are never counted as evidence. `next` and
+> `react-native` remain as TS/JS-only aliases. Narrow with `target.languages`.
+- `exclude` — extra globs to skip (added to built-in test/fixture/mock excludes; set `"defaultExcludes": false` to disable those).
 - `packs` — which rule packs to run. Built-ins: `uk-osa`, `uk-aadc`, `ng-ndpc`, `ng-fccpc`, `ng-firs`.
 - `packDirs` — extra directories of your own `*.json` packs.
 - `ignore` — rule ids to skip.
@@ -126,8 +129,8 @@ A pack is JSON. Each rule maps a *legal standard* to a static assertion over a
   "intent": "Geolocation must default to off for children.",
   "fix": "Default any location-sharing setting to off.",
   "assert": {
-    "find": "(geo|location)[^\\n;,]{0,30}(default|initial)[^\\n;,]{0,15}(false|off)",
-    "in": ["profile", "any"],
+    "find": "(share[_-]?location|location[_-]?sharing)[\"']?\\s*[:=]\\s*(false|off)\\b",
+    "in": ["profile", "privacy", "location"],
     "expect": "present"
   }
 }
@@ -142,9 +145,9 @@ Assertion nodes:
 or a raw glob. `expect: "absent"` flips the meaning — a match is a *violation*
 (used for nudge patterns, self-declared age checkboxes, etc.).
 
-### Surfaces (next adapter)
+### Surfaces
 
-`any`, `signup`, `auth`, `profile`, `chat`, `livestream`, `ugc`, `governance`.
+`any`, `signup`, `auth`, `profile`, `privacy`, `location`, `chat`, `livestream`, `ugc`, `moderation`, `consent`, `legal`, `dsr`, `security`, `retention`, `breach`, `processors`, `payments`, `invoice`, `governance`. Unknown surface names are pack-validation errors.
 
 ### Nigeria packs
 
@@ -199,7 +202,7 @@ npm test    # node --test — zero dependencies, nothing to install
 The suite runs on Node's built-in test runner against throwaway fixture repos:
 glob/brace expansion, every assertion probe (`find`, `allOf`/`anyOf`/`not`,
 `allInFile` + `within` windows, `expect: "absent"`), the pass/fail/`unknown`
-verdict semantics, and pack loading. CI runs it on Node 18, 20, and 22.
+verdict semantics, and pack loading. CI runs it on Node 18, 20, 22, and 24.
 
 ## License
 

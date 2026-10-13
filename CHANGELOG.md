@@ -5,6 +5,30 @@ All notable changes to `@nugehs/bouncer` are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **Language-agnostic scanning.** New default adapter `auto` scans TS/JS, Go, Java, Kotlin, Scala, C#, C/C++, Rust, Swift, Dart, PHP, Python, Ruby, Elixir, SQL and templates, plus docs/data. `next`/`react-native` remain as aliases (TS/JS only). Optional `target.languages`.
+- Surfaces are matched by directory/file names across camelCase, snake_case and kebab-case. New surfaces: `privacy`, `location`, `moderation`, `consent`, `legal`, `dsr`, `security`, `retention`, `breach`, `processors`, `payments`, `invoice`.
+- Rule fields: `appliesWhen` (precondition), `languages`, and `scope: "file"` on `find` (multi-line matches).
+- Config: `exclude`, `docs`, `defaultExcludes`. Findings gain `reason` (for `unknown`) and `unreadable`; `meta` gains `excluded`, `languages`, `missingRoots`, `warnings`.
+- Table output for `check`, `list`, `packs`, `explain`, `doctor`; per-pack summary in the HTML report.
+- Pack validation (shape, regex, severity, unknown surfaces, duplicate rule ids, pack id conflicts).
+
+### Changed (verdicts may change — intentional)
+- Comments (all supported languages) and test/fixture/mock/story files are no longer counted as evidence.
+- Default `target.roots` is now `["."]`; governance doc folders are always walked.
+- Rules no longer fall back to the `any` surface (risk assessment, DPIA, CSAM, terms, age assurance, geolocation).
+- Tightened: high-privacy default, geolocation default-off (now only applies when a location feature exists), self-declared age checkbox (multi-line), encryption (bcrypt alone no longer passes), VAT rate (must be 7.5%), drip pricing.
+- PDFs are located but not read; PDF-only evidence is `unknown` (`unreadable-only`).
+
+### Fixed
+- Missing repo / no scannable files now exit 2 instead of a silent green.
+- Boolean flags no longer swallow the next argument; unknown flags/invalid `--status` are usage errors (exit 2); `--ignore` is applied.
+- Errors and warnings go to stderr (clean `--json` stdout).
+- MCP: no replies to notifications, protocol version negotiation, `status` validated.
+- Regex `g`/`y` flags stripped (stateful matching bug).
+
 ## [0.2.0] - 2026-06-16
 
 ### Added

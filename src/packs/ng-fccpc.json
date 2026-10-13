@@ -14,10 +14,7 @@
       "assert": {
         "find": "all sales (are )?final|no refunds?,?\\s+(whatsoever|under any circumstances?|no exceptions|ever\\b)|no refunds? (will be|are) (made|given|issued|provided|offered|accepted)|strictly non[-_ ]?refundable|all (tickets|sales|purchases|fees|payments) are non[-_ ]?refundable|non[-_ ]?refundable and non[-_ ]?(transferable|exchangeable)|no returns,? no refunds",
         "in": [
-          "**/terms/**/*.{ts,tsx,md,mdx}",
-          "**/*{Terms,Refund,Policy,Disclaimer}*.{ts,tsx}",
-          "lib/compliance/**/*.{ts,tsx}",
-          "legal/**/*.{md,mdx}"
+          "legal"
         ],
         "expect": "absent"
       }
@@ -32,11 +29,8 @@
       "assert": {
         "find": "refund[-_ ]?(policy|eligib|process|request)|cancellation policy|refundPolicy|right to (cancel|a refund)|cancel.*refund",
         "in": [
-          "**/terms/**/*.{ts,tsx,md,mdx}",
-          "**/*{Refund,Cancel,Terms}*.{ts,tsx}",
-          "lib/compliance/**/*.{ts,tsx}",
-          "src/**/*refund*.ts",
-          "{docs,legal}/**/*.{md,mdx}"
+          "legal",
+          "payments"
         ],
         "expect": "present"
       }
@@ -46,16 +40,13 @@
       "standard": "No drip pricing — total price incl. fees shown before payment (FCCPA s.114-115)",
       "severity": "high",
       "surface": "any",
-      "intent": "The total price including service/booking fees must be disclosed before the consumer commits — fees revealed only at the final step (drip pricing) is a misleading practice.",
+      "intent": "The total price including service/booking fees must be disclosed before the consumer commits. bouncer checks that an all-in total is computed or labelled; it cannot prove fees are never revealed late.",
       "fix": "Compute and display the all-in total (ticket + service/booking fee) on the pricing/checkout surface before payment.",
       "assert": {
-        "allInFile": ["(service|booking|platform|processing)[_-]?fee", "total"],
+        "find": "total[\\w.]*\\s*[:=+][^\\n]{0,80}(service|booking|platform|processing|convenience)[_-]?fee|(service|booking|platform|processing|convenience)[_-]?fee[^\\n]{0,80}\\btotal|total[^\\n]{0,40}(incl\\.?|including|inclusive of)[^\\n]{0,20}fees?",
         "in": [
-          "**/*{fee,Fee,checkout,Checkout,pricing,Pricing}*.{ts,tsx}",
-          "**/{checkout,booking,ticket-purchase}/**/*.{ts,tsx}",
-          "lib/*fee*.{ts,tsx}"
+          "payments"
         ],
-        "within": 60,
         "expect": "present"
       }
     },
@@ -69,9 +60,9 @@
       "assert": {
         "find": "(accept|agree)[^\\n]{0,30}(terms|conditions)|InlineTermsAcceptance|terms[_-]?accepted|acceptTerms|agreeToTerms",
         "in": [
-          "**/{signup,sign-up,register,checkout,booking}/**/*.{ts,tsx}",
-          "**/*{Terms,Signup,Register,Checkout,Booking}*.{ts,tsx}",
-          "lib/compliance/**/*.{ts,tsx}"
+          "signup",
+          "payments",
+          "legal"
         ],
         "expect": "present"
       }
@@ -86,9 +77,7 @@
       "assert": {
         "find": "terms of (use|service)|TermsOfUse|terms[_-]?(and|&)[_-]?conditions|terms[_-]?of[_-]?use",
         "in": [
-          "**/terms/**/*.{ts,tsx,md,mdx}",
-          "**/*{Terms}*.{ts,tsx}",
-          "{docs,legal}/**/*.{md,mdx}"
+          "legal"
         ],
         "expect": "present"
       }
