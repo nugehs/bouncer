@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18, 20, 22]
+        node-version: [18, 20, 22, 24]
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
@@ -22,4 +22,6 @@ jobs:
       - name: Smoke-test CLI
         run: |
           node src/cli.js packs
-          node src/cli.js list --config bouncer.config.json || true
+          node src/cli.js list --config tests/fixtures/polyglot/bouncer.config.json
+          node src/cli.js doctor --config tests/fixtures/polyglot/bouncer.config.json
+          node src/cli.js check --config tests/fixtures/polyglot/bouncer.config.json --json --no-fail > /dev/null

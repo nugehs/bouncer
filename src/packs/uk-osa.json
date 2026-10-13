@@ -12,8 +12,11 @@
       "intent": "Where a service can be accessed by children and carries content harmful to them, 'highly effective' age assurance is required — self-declaration alone does not meet the bar.",
       "fix": "Integrate a recognised age-assurance method (age estimation, ID/age verification, or equivalent) on the access path.",
       "assert": {
-        "find": "age[_-]?(assurance|verification|estimation)|id[_-]?verification|\\bkyc\\b|yoti|onfido|veriff|persona|stripe[_-]?identity",
-        "in": ["signup", "auth", "any"],
+        "find": "age[ _-]?(assurance|verification|estimation)|id[_-]?verification|identity[_-]?verification|\\bkyc\\b|\\byoti\\b|\\bonfido\\b|\\bveriff\\b|persona[_.-]?(inquiry|sdk|client|verify|verification)|withpersona|stripe[_-]?identity",
+        "in": [
+          "signup",
+          "auth"
+        ],
         "expect": "present"
       }
     },
@@ -26,7 +29,9 @@
       "fix": "Add a report/flag affordance to every user-generated-content surface, wired to a complaints workflow.",
       "assert": {
         "find": "(report|flag)[^\\n]{0,25}(content|message|user|post|abuse|stream|comment)|reportContent|onReport|report[_-]?reason|flagContent",
-        "in": ["ugc"],
+        "in": [
+          "ugc"
+        ],
         "expect": "present"
       }
     },
@@ -39,7 +44,9 @@
       "fix": "Provide block/mute controls on chat, livestream, and profile surfaces.",
       "assert": {
         "find": "(block|mute)[^\\n]{0,15}(user|member|participant|sender)|blockUser|onBlock|muteUser|toggleBlock",
-        "in": ["ugc"],
+        "in": [
+          "ugc"
+        ],
         "expect": "present"
       }
     },
@@ -52,7 +59,9 @@
       "fix": "Add moderation hooks (profanity/abuse filtering, content classification, or a moderation queue) to UGC surfaces.",
       "assert": {
         "find": "moderat|profanity|content[_-]?filter|banned[_-]?words|blocklist|toxicity|safetyFilter",
-        "in": ["ugc"],
+        "in": [
+          "ugc"
+        ],
         "expect": "present"
       }
     },
@@ -65,7 +74,9 @@
       "fix": "Add an illegal-content (and children's) risk assessment artifact to the repo or link it from governance docs.",
       "assert": {
         "find": "illegal[_-]?content[_-]?risk|risk assessment|children'?s? (access|risk) assessment",
-        "in": ["governance", "any"],
+        "in": [
+          "governance"
+        ],
         "expect": "present"
       }
     },
@@ -78,7 +89,11 @@
       "fix": "Document and implement a CSAM detection/escalation route (NCMEC/IWF referral or equivalent) for UGC.",
       "assert": {
         "find": "\\bcsam\\b|\\bcsea\\b|child sexual|\\bncmec\\b|\\biwf\\b",
-        "in": ["governance", "ugc", "any"],
+        "in": [
+          "governance",
+          "ugc",
+          "moderation"
+        ],
         "expect": "present"
       }
     },
@@ -91,7 +106,10 @@
       "fix": "Add community guidelines / acceptable-use terms that prohibit illegal content and describe enforcement.",
       "assert": {
         "find": "prohibited content|illegal content|community guidelines|acceptable use|content policy",
-        "in": ["governance", "any"],
+        "in": [
+          "legal",
+          "governance"
+        ],
         "expect": "present"
       }
     }

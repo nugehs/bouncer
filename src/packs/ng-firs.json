@@ -12,11 +12,9 @@
       "intent": "Where the platform charges VAT, it must use the statutory 7.5% rate, expressed as a single source-of-truth constant rather than a magic number.",
       "fix": "Define a VAT_RATE = 0.075 constant and apply it consistently; do not hard-code other rates.",
       "assert": {
-        "find": "VAT_RATE|vat[_-]?rate|0\\.075\\b|7\\.5\\s*%",
+        "find": "vat[_-]?(rate|percent(age)?)?[^\\n]{0,30}(0\\.075\\b|7\\.5\\s*%?)|(0\\.075\\b|7\\.5\\s*%)[^\\n]{0,30}\\bvat\\b",
         "in": [
-          "src/**/*{tax,Tax,vat,Vat,fee,Fee,payment,Payment,pricing}*.ts",
-          "**/*{fee,Fee,tax,Tax,vat,Vat,pricing,Pricing}*.{ts,tsx}",
-          "lib/*fee*.{ts,tsx}"
+          "payments"
         ],
         "expect": "present"
       }
@@ -29,11 +27,12 @@
       "intent": "VAT is due on the platform's commission/service fee — the fee computation should apply VAT to the commission line.",
       "fix": "Apply VAT to the commission/service-fee line in the fee calculation and surface it on the invoice.",
       "assert": {
-        "allInFile": ["commission|service[_-]?fee|platform[_-]?fee", "\\bvat\\b|\\btax\\b"],
+        "allInFile": [
+          "commission|service[_-]?fee|platform[_-]?fee",
+          "\\bvat\\b|\\btax\\b"
+        ],
         "in": [
-          "src/**/*{fee,Fee,tax,Tax,commission,payment,seller}*.ts",
-          "**/*{fee,Fee,pricing,Pricing,commission}*.{ts,tsx}",
-          "lib/*fee*.{ts,tsx}"
+          "payments"
         ],
         "within": 40,
         "expect": "present"
@@ -49,9 +48,7 @@
       "assert": {
         "find": "withholding|\\bWHT\\b|wht[_-]?(tax|rate|amount)|tax[_-]?withheld",
         "in": [
-          "src/{seller,paystack,payment,payment-history}/**/*.ts",
-          "src/**/*{payout,Payout,withholding}*.ts",
-          "**/*{payout,Payout,withholding,WHT}*.{ts,tsx}"
+          "payments"
         ],
         "expect": "present"
       }
@@ -66,9 +63,8 @@
       "assert": {
         "find": "tax[_-]?invoice|vat[_-]?invoice|vat[_-]?receipt|invoice[^\\n]{0,30}(vat|tax)|receipt[^\\n]{0,30}vat",
         "in": [
-          "src/pdf/**/*.ts",
-          "src/**/*{invoice,Invoice,receipt,Receipt,ticket-generator}*.ts",
-          "**/*{Invoice,Receipt}*.{ts,tsx}"
+          "invoice",
+          "payments"
         ],
         "expect": "present"
       }

@@ -4,8 +4,9 @@ import readline from "node:readline";
 import { fileURLToPath } from "node:url";
 import { loadConfig } from "./config.js";
 import { runCheck, listRules, explainRule, availablePacks } from "./packs.js";
+import { statusMatches, STATUS_FILTERS } from "./verdicts.js";
 
-const protocolVersion = "2025-06-18";
+const SUPPORTED_PROTOCOLS = ["2025-06-18", "2025-03-26", "2024-11-05"];
 const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const packageJson = JSON.parse(fs.readFileSync(path.join(packageRoot, "package.json"), "utf8"));
 
@@ -20,7 +21,8 @@ const tools = [
       properties: {
         config: { type: "string", description: "Path to bouncer.config.json. Defaults to searching up from cwd." },
         packs: { type: "array", items: { type: "string" }, description: "Restrict to these pack ids (e.g. uk-osa, uk-aadc)." },
-        status: { type: "string", description: "Filter findings: fail, unknown, or all (default)." },
+        status: { type: "string", enum: STATUS_FILTERS, description: "Filter findings: fail, unknown (fail+unknown), or all (default)." },
+        ignore: { type: "array", items: { type: "string" }, description: "Rule ids to skip." },
       },
     },
   },
@@ -88,20 +90,24 @@ export async function startMcpServer({ input = process.stdin, output = process.s
 }
 
 async function handleMessage(message) {
-  if (!message || message.jsonrpc !== "2.0" || typeof message.method !== "string") {
-    return errorResponse(message?.id ?? null, -32600, "Invalid JSON-RPC request");
+  const isObj = message && typeof message === "object" && !Array.isArray(message);
+  const isNotification = isObj && !("id" in message);
+  if (!isObj || message.jsonrpc !== "2.0" || typeof message.method !== "string") {
+    // Responses from the client (result/error, no method) are ignored.
+    if (isObj && !("method" in message) && ("result" in message || "error" in message)) return undefined;
+    return errorResponse(isObj ? message.id ?? null : null, -32600, "Invalid JSON-RPC request");
   }
+  // JSON-RPC: notifications never get a reply, even on error.
+  if (isNotification) return undefined;
 
   try {
     switch (message.method) {
       case "initialize":
         return successResponse(message.id, {
-          protocolVersion,
+          protocolVersion: SUPPORTED_PROTOCOLS.includes(message.params?.protocolVersion) ? message.params.protocolVersion : SUPPORTED_PROTOCOLS[0],
           capabilities: { tools: { listChanged: false } },
           serverInfo: { name: packageJson.name, version: packageJson.version },
         });
-      case "notifications/initialized":
-        return undefined;
       case "ping":
         return successResponse(message.id, {});
       case "tools/list":
@@ -144,12 +150,12 @@ async function callTool(params = {}) {
 function dispatchTool(name, args) {
   switch (name) {
     case "compliance_check": {
+      const filter = args.status ?? "all";
+      if (!STATUS_FILTERS.includes(filter)) throw new McpProtocolError(-32602, `status must be one of ${STATUS_FILTERS.join(", ")}`);
       const cfg = withPacks(loadConfig(args.config), args.packs);
+      if (Array.isArray(args.ignore)) cfg.ignore = [...cfg.ignore, ...args.ignore];
       const result = runCheck(cfg);
-      const filter = args.status || "all";
-      if (filter !== "all") {
-        result.findings = result.findings.filter((f) => (filter === "fail" ? f.status === "fail" : f.status !== "pass"));
-      }
+      result.findings = result.findings.filter((f) => statusMatches(f.status, filter));
       return result;
     }
     case "list_rules":
