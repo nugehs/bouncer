@@ -216,3 +216,12 @@ test("MCP: no reply to notifications, version negotiation, status validation", (
   assert.equal(lines[2].error.code, -32602);
   assert.ok(lines[3].result.structuredContent.findings.every((f) => f.status === "fail"));
 });
+
+test("generated API docs are excluded from evidence", () => {
+  const dir = repo({ "src/chat/c.ts": "x()", "documentation/classes/ReportDto.html": "<p>reportContent blockUser</p>" });
+  assert.equal(run(rule("uk-osa", "osa.block-mechanism-ugc"), dir).status, "fail");
+});
+test("internal docs quoting a banned clause do not trip the void-clause rule", () => {
+  const dir = repo({ "app/terms/page.tsx": "<p>Refunds per policy.</p>", "docs/readiness.md": 'No blanket "all sales final" clauses.' });
+  assert.equal(run(rule("ng-fccpc", "fccpc.no-final-sale-clause"), dir).status, "pass");
+});

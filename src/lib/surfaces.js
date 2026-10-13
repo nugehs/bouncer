@@ -42,6 +42,8 @@ export const SURFACES = {
     kinds: ALL,
     globs: GOV_GLOBS,
   },
+  // Customer-facing terms only (no docs/ globs): internal notes that *quote* a banned clause are not terms.
+  terms: { names: ["terms", "tos", "termsofservice", "termsofuse", "termsandconditions", "refund", "refundpolicy", "cancellation", "disclaimer"], kinds: ["code", "doc", "data"] },
   dsr: { names: ["gdpr", "dsr", "dataexport", "exportdata", "deleteaccount", "dataaccess", "datarequest", "erasure", "settings", "account"], kinds: CODE },
   security: { names: ["security", "encryption", "encrypt", "crypto", "cipher", "kms", "vault", "dataencryption", "privacy"], kinds: CODE },
   retention: { names: ["retention", "softdelete", "purge", "cleanup", "scheduled", "scheduledtasks", "cron", "jobs", "worker", "workers"], kinds: CODE },

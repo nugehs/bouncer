@@ -17,6 +17,11 @@ export const DEFAULT_EXCLUDES = [
   "**/*.d.ts",
   "**/*.min.js",
   "**/*.generated.*",
+  // Generated API docs (compodoc, typedoc, javadoc, sphinx/mkdocs builds, storybook) mirror source and are not evidence.
+  "**/{documentation,apidocs,javadoc,typedoc,storybook-static,_site,site}/**",
+  "docs/{api,_build,html}/**",
+  // Backups/archives are not the live code path.
+  "**/{*-backup,*_backup,backup,backups,archive,archived}/**",
 ];
 
 // Governance docs are walked even when `roots` is narrower than the repo.
