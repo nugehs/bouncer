@@ -225,3 +225,45 @@ test("internal docs quoting a banned clause do not trip the void-clause rule", (
   const dir = repo({ "app/terms/page.tsx": "<p>Refunds per policy.</p>", "docs/readiness.md": 'No blanket "all sales final" clauses.' });
   assert.equal(run(rule("ng-fccpc", "fccpc.no-final-sale-clause"), dir).status, "pass");
 });
+
+// ── smoke-test rough edges ──
+test("check exits 1 when every rule is unknown, and --no-fail still exits 0", () => {
+  const dir = repo({ "bouncer.config.json": '{"packs":["uk-osa"]}', "README.md": "# empty\n" });
+  const cfg = path.join(dir, "bouncer.config.json");
+  const r = cli(["check", "--config", cfg, "--json"]);
+  const { totals } = JSON.parse(r.stdout);
+  assert.equal(totals.pass + totals.fail, 0);
+  assert.ok(totals.unknown > 0);
+  assert.equal(r.status, 1);
+  assert.match(r.stderr, /every rule is unknown/);
+  assert.equal(cli(["check", "--config", cfg, "--no-fail"]).status, 0);
+});
+test("a pass with no hits says how many files were scanned", () => {
+  const dir = repo({ "bouncer.config.json": '{"packs":["uk-aadc"]}', "src/signup/index.ts": "export const signup = () => db.insert();\n" });
+  const r = cli(["check", "--config", path.join(dir, "bouncer.config.json"), "--no-fail"]);
+  assert.match(r.stdout, /aadc\.no-nudge-techniques\s+│ nothing offending in \d+ files? scanned/);
+  const out = path.join(dir, "r.html");
+  cli(["report", "--config", path.join(dir, "bouncer.config.json"), "--out", out]);
+  assert.match(fs.readFileSync(out, "utf8"), /nothing offending in \d+ files? scanned/);
+});
+test("--version and -v print the package version", () => {
+  const { version } = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"));
+  for (const flag of ["--version", "-v"]) {
+    const r = cli([flag]);
+    assert.equal(r.status, 0);
+    assert.equal(r.stdout.trim(), version);
+  }
+});
+test("an unknown command prints the help hint once", () => {
+  const r = cli(["nonsense"]);
+  assert.equal(r.status, 2);
+  assert.equal(r.stderr.match(/bouncer help/g).length, 1);
+});
+test("underscore config keys are comments; ignores only warn for ids no pack defines", () => {
+  assert.deepEqual(resolveConfig({ _note: "why" })._warnings, []);
+  const r = cli(["check", "--config", FIXTURE, "--json", "--no-fail", "--pack", "uk-osa", "--ignore", "aadc.dpia-exists", "--ignore", "nope.rule"]);
+  assert.doesNotMatch(r.stderr, /aadc\.dpia-exists/);
+  assert.match(r.stderr, /"nope\.rule" is not defined by any pack/);
+  const d = JSON.parse(cli(["doctor", "--config", FIXTURE, "--json", "--pack", "uk-osa"]).stdout);
+  assert.ok(!d.checks.some((c) => c.name === "ignore"));
+});

@@ -3,7 +3,7 @@
 
 export class UsageError extends Error {}
 
-const COMMON_BOOL = ["help", "json"];
+const COMMON_BOOL = ["help", "json", "version"];
 export const COMMANDS = {
   check: { values: ["config", "pack", "status", "ignore"], bools: ["no_fail"] },
   report: { values: ["config", "pack", "out", "ignore"], bools: [] },
@@ -16,7 +16,7 @@ export const COMMANDS = {
   help: { values: [], bools: [] },
 };
 
-const ALIASES = { o: "out", h: "help", j: "json", p: "pack", c: "config", s: "status" };
+const ALIASES = { o: "out", h: "help", j: "json", p: "pack", c: "config", s: "status", v: "version" };
 const REPEATABLE = new Set(["pack", "ignore"]);
 
 export function parseArgv(argv) {
@@ -25,7 +25,7 @@ export function parseArgv(argv) {
   if (args.length && !args[0].startsWith("-")) command = args.shift();
   const result = { command, positionals: [], flags: {} };
   const spec = COMMANDS[command];
-  if (!spec) throw new UsageError(`Unknown command: ${command}. Run \`bouncer help\`.`);
+  if (!spec) throw new UsageError(`Unknown command: ${command}.`);
   const bools = new Set([...COMMON_BOOL, ...spec.bools]);
   const values = new Set(spec.values);
 

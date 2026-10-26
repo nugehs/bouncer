@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import fs from "node:fs";
 import { parseArgv, UsageError } from "./lib/args.js";
 import { loadConfig } from "./lib/config.js";
 import { runCheck, listRules, explainRule, availablePackIndex } from "./lib/packs.js";
@@ -28,6 +29,7 @@ async function main(argv = process.argv.slice(2)) {
   try {
     const parsed = parseArgv(argv);
     if (parsed.flags.help) return handleHelp();
+    if (parsed.flags.version) return handleVersion();
     await commandHandlers[parsed.command](parsed);
   } catch (error) {
     printError(`bouncer: ${error instanceof Error ? error.message : String(error)}`);
@@ -54,7 +56,13 @@ function handleCheck(parsed) {
   warn(result);
   if (parsed.flags.json) reportJson(result);
   else reportHuman(result, { statusFilter });
-  if (!parsed.flags.no_fail && cfg.failOn.some((k) => (result.totals[k] || 0) > 0)) process.exitCode = 1;
+  if (parsed.flags.no_fail) return;
+  if (cfg.failOn.some((k) => (result.totals[k] || 0) > 0)) process.exitCode = 1;
+  // Nothing verified at all is not a green gate: every rule unknown means bouncer found none of the surfaces.
+  else if (result.totals.unknown > 0 && result.totals.pass + result.totals.fail === 0) {
+    printError("bouncer: every rule is unknown — no regulated surface was located, so nothing was verified.");
+    process.exitCode = 1;
+  }
 }
 
 function handleReport(parsed) {
@@ -143,6 +151,11 @@ async function handleMcp() {
 
 function handleHelp() {
   printHelp();
+}
+
+function handleVersion() {
+  const pkg = JSON.parse(fs.readFileSync(new URL("../package.json", import.meta.url), "utf8"));
+  printText(pkg.version);
 }
 
 main();

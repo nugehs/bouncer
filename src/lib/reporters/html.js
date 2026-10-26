@@ -1,4 +1,4 @@
-import { reasonText } from "../verdicts.js";
+import { reasonText, cleanScanText } from "../verdicts.js";
 import { groupByPack, packTotals } from "./human.js";
 
 // Self-contained HTML compliance report (inline CSS + a little vanilla JS, no deps).
@@ -77,7 +77,7 @@ function packTable(rows) {
           ? locCell(f.hits[0].file, f.hits[0].line)
           : f.status === "fail" && f.hits[0]
             ? locCell(f.hits[0].file, f.hits[0].line)
-            : `<td class="loc dim">${f.status === "unknown" ? "not located" : "—"}</td>`;
+            : `<td class="loc dim">${f.status === "unknown" ? "not located" : f.status === "pass" ? esc(cleanScanText(f.scanned)) : "—"}</td>`;
       const detail =
         f.status === "fail"
           ? `<div class="sub">${esc(f.intent || "")}</div><div class="fix">Fix: ${esc(f.fix || "")}</div>`

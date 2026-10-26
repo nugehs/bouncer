@@ -66,7 +66,8 @@ export function loadConfig(explicitPath) {
 export function resolveConfig(raw, dir = process.cwd(), cfgPath = undefined) {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new ConfigError("Config must be a JSON object.");
   const warnings = [];
-  for (const k of Object.keys(raw)) if (!KNOWN_KEYS.has(k)) warnings.push(`Unknown config key "${k}" ignored.`);
+  // Keys starting with "_" are comments (JSON has none), so they are skipped without a warning.
+  for (const k of Object.keys(raw)) if (!KNOWN_KEYS.has(k) && !k.startsWith("_")) warnings.push(`Unknown config key "${k}" ignored.`);
   const target = raw.target ?? {};
   if (typeof target !== "object" || Array.isArray(target)) throw new ConfigError(`"target" must be an object.`);
   for (const k of Object.keys(target)) if (!TARGET_KEYS.has(k)) warnings.push(`Unknown config key "target.${k}" ignored.`);

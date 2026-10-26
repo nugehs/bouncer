@@ -114,6 +114,9 @@ not find. Missing surface → honest "can't determine".
 - `packDirs` — extra directories of your own `*.json` packs.
 - `ignore` — rule ids to skip.
 - `failOn` — which buckets make `check` exit non-zero (default `["fail"]`).
+  Regardless of `failOn`, `check` also exits 1 when *every* rule is `unknown`:
+  no surface was located, so nothing was verified.
+- Keys starting with `_` (e.g. `"_note"`) are treated as comments and ignored silently.
 
 ## Rule packs
 
