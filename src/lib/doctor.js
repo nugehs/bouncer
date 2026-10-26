@@ -26,11 +26,10 @@ export function getDoctorReport(cfg) {
   }
 
   try {
-    const { packs, warnings } = resolvePacks(cfg);
+    const { packs, warnings, knownRuleIds } = resolvePacks(cfg);
     add("packs", "ok", packs.map((p) => `${p.id} (${p.rules.length})`).join(", "));
     for (const w of warnings) add("pack files", "warn", w);
-    const ids = new Set(packs.flatMap((p) => p.rules.map((r) => r.id)));
-    for (const id of cfg.ignore || []) if (!ids.has(id)) add("ignore", "warn", `"${id}" is not in the selected packs`);
+    for (const id of cfg.ignore || []) if (!knownRuleIds.has(id)) add("ignore", "warn", `"${id}" is not defined by any pack`);
   } catch (error) {
     add("packs", "fail", error.message);
   }

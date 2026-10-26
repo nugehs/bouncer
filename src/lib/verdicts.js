@@ -20,3 +20,6 @@ export const UNKNOWN_REASONS = {
 };
 
 export const reasonText = (r) => UNKNOWN_REASONS[r] || "can't determine";
+
+/** Evidence for a pass with no hits — an "absent" rule whose offending pattern was not found. */
+export const cleanScanText = (scanned) => `nothing offending in ${scanned} file${scanned === 1 ? "" : "s"} scanned`;

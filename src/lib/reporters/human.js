@@ -1,7 +1,7 @@
 import { printText } from "../output.js";
 import { GLYPH } from "../brand.js";
 import { renderTable, indent } from "../table.js";
-import { statusMatches, reasonText } from "../verdicts.js";
+import { statusMatches, reasonText, cleanScanText } from "../verdicts.js";
 
 const SEV_ORDER = { high: 0, medium: 1, low: 2 };
 const STATUS_ORDER = { fail: 0, unknown: 1, pass: 2 };
@@ -89,7 +89,7 @@ export function packTotals(rows) {
 export function evidence(f) {
   if (f.status === "pass") {
     const h = f.hits[0];
-    if (!h) return "";
+    if (!h) return cleanScanText(f.scanned);
     return `${h.file}:${h.line}${f.hits.length > 1 ? ` (+${f.hits.length - 1})` : ""}`;
   }
   if (f.status === "fail") {

@@ -38,9 +38,11 @@ Usage:
   bouncer doctor [--config file] [--json]                     Sanity-check config, files, languages, packs
   bouncer mcp                                                 Start the MCP server (stdio)
   bouncer help
+  bouncer --version
 
 Exit codes:
   0  ok    1  gate failed (check) / doctor failed    2  usage, config, or scan error
+  check also exits 1 when every rule is unknown (nothing was verified); --no-fail skips both.
 
 Verdicts:
   pass     the required control was found (file:line evidence)

@@ -89,7 +89,8 @@ export function resolvePacks(cfg) {
     }
   }
   const warnings = errors.filter((e) => !e.startsWith(`Pack id "`) || !wanted.some((w) => e.includes(`"${w}"`)));
-  return { packs, warnings };
+  const knownRuleIds = new Set([...byId.values()].flat().flatMap((p) => p.rules.map((r) => r.id)));
+  return { packs, warnings, knownRuleIds };
 }
 
 export function loadPacks(cfg) {
@@ -99,11 +100,11 @@ export function loadPacks(cfg) {
 /** Run every rule in the configured packs against the target repo. */
 export function runCheck(cfg) {
   const ctx = buildContext(cfg);
-  const { packs, warnings } = resolvePacks(cfg);
+  const { packs, warnings, knownRuleIds } = resolvePacks(cfg);
   const ignore = new Set(cfg.ignore || []);
-  const allIds = new Set(packs.flatMap((p) => p.rules.map((r) => r.id)));
   const allWarnings = [...(cfg._warnings || []), ...warnings];
-  for (const id of ignore) if (!allIds.has(id)) allWarnings.push(`Ignored rule id "${id}" is not in the selected packs.`);
+  // Only flag ids no pack defines (likely typos); ids from packs left out by --pack are expected.
+  for (const id of ignore) if (!knownRuleIds.has(id)) allWarnings.push(`Ignored rule id "${id}" is not defined by any pack.`);
 
   const findings = [];
   for (const pack of packs) {

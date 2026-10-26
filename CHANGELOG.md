@@ -5,6 +5,20 @@ All notable changes to `@nugehs/bouncer` are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- `bouncer --version` (`-v`) prints the package version.
+
+### Changed
+- `check` exits 1 when every rule is `unknown`, whatever `failOn` says: no surface was located, so nothing was verified. `--no-fail` still exits 0.
+- A pass with no hits (an `expect: "absent"` rule) now says `nothing offending in N files scanned` in the terminal and HTML report instead of a blank cell.
+- Config keys starting with `_` are comments and no longer warn.
+- `--ignore` / `ignore` ids only warn when no pack defines them, so `--pack` no longer warns about rules from the packs it leaves out. The warning now reads `is not defined by any pack`.
+
+### Fixed
+- An unknown command printed "Run `bouncer help`" twice.
+
 ## [0.3.0] - 2026-10-13
 
 ### Added
